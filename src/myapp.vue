@@ -16,6 +16,6 @@ import my_select from './components/my_select.vue'
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #000000;
-  margin-top: 60px;
+  margin-top: 0px;
 }
 </style>

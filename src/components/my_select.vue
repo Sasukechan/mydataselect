@@ -101,8 +101,14 @@
 				<div v-if="scope.row.provId===33">河北</div>
 				<div v-if="scope.row.provId===0">安徽</div></template>
 		</el-table-column>
-		<el-table-column prop="tele" label="联系电话" width="180" align="center"/>
-		<el-table-column prop="email" label="电子邮箱" width="180" align="center"/>
+		<el-table-column prop="tele" label="联系电话" width="180" align="center">
+		<template #default="scope">
+		{{scope.row.tele.replace(scope.row.tele.substr(3,5),'*****')}}</template>
+		</el-table-column>
+		<el-table-column prop="email" label="电子邮箱" width="180" align="center">
+		<template #default="scope">
+		{{scope.row.email.replace(scope.row.email.substr(4,7),'*******')}}</template>
+		</el-table-column>
 		<el-table-column prop="amount" label="交易金额" width="180" align="center"/>
 	    <el-table-column prop="errState" label="错误原因"  width="320" align="center">
 			<template #default="scope">
@@ -164,10 +170,10 @@
 				    <el-input v-model="type" placeholder="" disabled></el-input>
 				  </el-form-item>
 			      <el-form-item label="联系电话">
-			        <el-input v-model="detail.tele" placeholder="" disabled oncut="return false" onpaste="return false" oncopy="return false"></el-input>
+			        <el-input v-model="te" placeholder="" disabled oncut="return false" onpaste="return false" oncopy="return false"></el-input>
 			      </el-form-item>
 				  <el-form-item label="电子邮箱">
-				    <el-input v-model="detail.email" placeholder="" disabled oncut="return false" onpaste="return false" oncopy="return false"></el-input>
+				    <el-input v-model="eemail" placeholder="" disabled oncut="return false" onpaste="return false" oncopy="return false"></el-input>
 				  </el-form-item>
 				  <el-form-item label="交易金额">
 				    <el-input v-model="detail.amount" placeholder="" disabled></el-input>
@@ -202,12 +208,16 @@ let state=ref()
 let cardid=ref()
 let reason=ref()
 let type=ref()
+let te=ref()
+let eemail=ref()
 let detail= ref(null)
 const dialogVisible = ref(false)
 const handledetail = (row) =>{
 	dialogVisible.value= true
 	detail.value=row
 	cardid.value=row.cardId.toString().replace(row.cardId.toString().substr(5,8),'********')
+	te.value=row.tele.replace(row.tele.substr(3,5),'*****')
+	eemail.value=row.email.replace(row.email.substr(4,7),'*******')
 	state.value=(row.dealWay===1?'已处理':'待处理')
 	if(row.vipType===0) type.value='白金牡丹卡'
 	else if(row.vipType===1) type.value='白金卡'
@@ -331,7 +341,7 @@ const handleSearch= () =>{
 		console.log(input2)
 	arr.value = tableData.value.filter(item => 
 		(!value1.value ||(value1.value[0] <= item.time && item.time <= value1.value[1]))&&
-		(!input1.value ||(item.name(input1.value) !== -1))&&
+		(!input1.value ||(item.name.indexOf(input1.value) !== -1))&&
 		(!input2.value ||(item.cardId.toString().indexOf(input2.value)!==-1)))}
 	if (arr.value) {
 		handleData.value = arr.value
@@ -340,6 +350,9 @@ const handleSearch= () =>{
 //重置
 const handlereset = () =>{
 	handleData.value = tableData.value
+	input2.value=''
+	input1.value=''
+	value1.value=''
 }
 </script>
 <style>
